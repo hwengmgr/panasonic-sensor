@@ -91,6 +91,11 @@ int16_t sensirion_uart_open() {
     options.c_iflag = IGNPAR;
     options.c_oflag = 0;
     options.c_lflag = 0;
+        
+    //set timeout on read
+    options.c_cc[VTIME] = 10; //1sec
+    options.c_cc[VMIN] = 0;
+    
     tcflush(uart_fd, TCIFLUSH);
     tcsetattr(uart_fd, TCSANOW, &options);
     return 0;
