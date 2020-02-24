@@ -51,6 +51,37 @@ int main(void) {
         sensirion_sleep_usec(1000000); /* sleep for 1s */
     }
 
+    // try to see if we can read a packet coming from the panasonic. SHould be 32 bytes long
+    /*
+     * int16_t sensirion_uart_rx(uint16_t max_data_len, uint8_t *data) {
+     *     if (uart_fd == -1)
+     *         return -1;
+     * return read(uart_fd, (void *)data, max_data_len);
+     * }
+    */
+    int16_t len;
+    uint16_t i;
+    uint8_t rx_frame[SPS30_MAX_SERIAL_LEN];
+    
+    // loop reads...
+    while(1) {
+        // zero out array
+        for (i=0;i<32;i++) rx_frame[i]=0;
+        len=-1;
+        
+        len = sensirion_uart_rx(SPS30_MAX_SERIAL_LEN, rx_frame);
+        if (len < 1) printf("no length returned\n");
+        printf("%d bytes data returned: ", len);
+        for (i=0;i<32;i++)
+            printf("%x,", rx_frame[i]);
+        printf("\n");
+       sensirion_sleep_usec(1000000); /* sleep for 0.7s */
+    }
+    return 0;
+
+
+
+    
     /* Busy loop for initialization, because the main loop does not work without
      * a sensor.
      */
